@@ -205,9 +205,9 @@ function M.setup()
 			"--add-opens",
 			"java.base/java.lang=ALL-UNNAMED",
 			-- If you use lombok, download the lombok jar and place it in ~/.local/share/eclipse
-			-- "-javaagent:"
-			-- 	.. home
-			-- 	.. "/.local/share/eclipse/lombok.jar",
+			"-javaagent:"
+				.. home
+				.. "/.local/share/nvim/mason/packages/jdtls/lombok.jar",
 
 			-- The jar file is located where jdtls was installed. This will need to be updated
 			-- to the location where you installed jdtls
@@ -217,7 +217,7 @@ function M.setup()
 			-- The configuration for jdtls is also placed where jdtls was installed. This will
 			-- need to be updated depending on your environment
 			"-configuration",
-			home .. "/.local/share/nvim/mason/packages/jdtls/config_linux",
+			home .. "/.local/share/nvim/mason/packages/jdtls/config_mac",
 
 			-- Use the workspace_folder defined above to store data for this project
 			"-data",

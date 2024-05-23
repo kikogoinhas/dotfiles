@@ -1,3 +1,4 @@
+local setup_formatter = require("kiko.core.lsp.nvim-jdtls-formatter-setup")
 local M = {}
 
 function M.setup()
@@ -24,10 +25,11 @@ function M.setup()
 		vim.split(vim.fn.glob(mason_packages_path .. "/java-test/extension/server/*.jar", 1), "\n")
 	)
 
+	local augroup = vim.api.nvim_create_augroup("JdtlsFormatting", {})
+
 	local on_attach = function(_, bufnr)
 		jdtls_dap.setup_dap_main_class_configs()
 		jdtls.setup_dap({ hotcodereplace = "auto" })
-		jdtls_setup.add_commands()
 
 		local dap = require("dap")
 		dap.configurations.java = {
@@ -39,6 +41,15 @@ function M.setup()
 				port = 5005,
 			},
 		}
+
+		setup_formatter()
+
+		-- Format on save
+		vim.api.nvim_create_autocmd("BufWritePost", {
+			group = augroup,
+			command = "FormatWrite",
+		})
+
 		local opts = { noremap = true, silent = true }
 		local keymap = vim.keymap
 
@@ -87,6 +98,11 @@ function M.setup()
 
 		opts.desc = "Run nearest class"
 		keymap.set("n", "<leader>dm", jdtls.test_nearest_method)
+
+		opts.desc = "Format"
+		keymap.set("n", "<leader>l", function()
+			vim.cmd("FormatWrite")
+		end)
 	end
 
 	local capabilities = {
@@ -132,13 +148,7 @@ function M.setup()
 					includeDecompiledSources = true,
 				},
 				format = {
-					settings = {
-						-- Use Google Java style guidelines for formatting
-						-- To use, make sure to download the file from https://github.com/google/styleguide/blob/gh-pages/eclipse-java-google-style.xml
-						-- and place it in the ~/.local/share/eclipse directory
-						url = "/.local/share/eclipse/eclipse-java-google-style.xml",
-						profile = "GoogleStyle",
-					},
+					enabled = false,
 				},
 				signatureHelp = { enabled = true },
 				contentProvider = { preferred = "fernflower" }, -- Use fernflower to decompile library code
@@ -217,7 +227,7 @@ function M.setup()
 			-- The configuration for jdtls is also placed where jdtls was installed. This will
 			-- need to be updated depending on your environment
 			"-configuration",
-			home .. "/.local/share/nvim/mason/packages/jdtls/config_mac",
+			home .. "/.local/share/nvim/mason/packages/jdtls/config_linux",
 
 			-- Use the workspace_folder defined above to store data for this project
 			"-data",

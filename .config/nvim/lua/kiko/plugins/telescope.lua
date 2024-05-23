@@ -37,11 +37,11 @@ return {
 		keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Fuzzy find recent files" })
 		keymap.set("n", "<leader>fs", "<cmd>Telescope live_grep<cr>", { desc = "Find string in cwd" })
 		keymap.set("n", "<leader>fc", "<cmd>Telescope grep_string<cr>", { desc = "Find string under cursor in cwd" })
-		keymap.set("n", "<leader>fs", function()
+		keymap.set("n", "<leader>fS", function()
 			builtin.lsp_document_symbols()
 		end, { desc = "Find string under cursor in cwd" })
 		keymap.set("n", "<leader>gS", function()
 			builtin.git_status()
-		end, { desc = "Find string under cursor in cwd" })
+		end, { desc = "Do git status" })
 	end,
 }

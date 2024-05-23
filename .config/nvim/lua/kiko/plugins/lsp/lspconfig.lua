@@ -4,9 +4,9 @@ return {
 	dependencies = {
 		"hrsh7th/cmp-nvim-lsp",
 		{ "antosha417/nvim-lsp-file-operations", config = true },
+		{ "folke/neodev.nvim", config = true },
 	},
 	config = function()
-		local home = os.getenv("HOME")
 		-- import lspconfig plugin
 		local lspconfig = require("lspconfig")
 		-- import cmp-nvim-lsp plugin
@@ -188,7 +188,7 @@ return {
 					workspace = {
 						-- make language server aware of runtime files
 						library = {
-							[vim.fn.expand("$VIMRUNTIME/lua")] = true,
+							vim.env.VIMRUNTIME,
 							[vim.fn.stdpath("config") .. "/lua"] = true,
 						},
 					},

@@ -27,7 +27,6 @@ return {
 		mason_lspconfig.setup({
 			-- list of servers for mason to install
 			ensure_installed = {
-				"tsserver",
 				"html",
 				"cssls",
 				"tailwindcss",
@@ -42,6 +41,8 @@ return {
 				"jdtls",
 				"gradle_ls",
 				"dockerls",
+				"volar",
+				"vtsls",
 				"yamlls",
 			},
 			-- auto-install configured servers (with lspconfig)

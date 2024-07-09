@@ -6,3 +6,4 @@
 !.config
 !.config/nvim/
 !.config/nvim/**
+!.kikogoinhasrc

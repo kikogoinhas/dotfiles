@@ -1,0 +1,13 @@
+# Env
+WIN_USER="francisco.goinhas"
+WIN_HOME="/mnt/c/Users/$WIN_USER"
+
+# Aliases
+alias pbcopy="xclip -selection clipboard -i"
+alias pbpaste="xclip -o"
+alias dotfiles="git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
+alias python=python3
+# asdf
+. "$HOME/.asdf/asdf.sh"
+. "$HOME/.asdf/completions/asdf.bash"
+

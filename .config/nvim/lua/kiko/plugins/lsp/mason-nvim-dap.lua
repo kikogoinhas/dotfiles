@@ -19,6 +19,8 @@ return {
 			"node-debug2-adapter",
 			"javadbg",
 			"javatest",
+			"codelldb",
+			"python",
 		},
 		handlers = {
 			function(config)
@@ -26,6 +28,32 @@ return {
 
 				-- Keep original functionality
 				require("mason-nvim-dap").default_setup(config)
+			end,
+			python = function(config)
+				local venv = os.getenv("VIRTUAL_ENV")
+				local command = "python"
+
+				local handle = io.popen("whereis -q python")
+
+				if handle ~= nil then
+					command = handle:read("*a")
+					handle:close()
+				end
+
+				if venv ~= nil then
+					local venvPython = venv .. "/bin/python"
+					command = venvPython
+				end
+
+				config.adapters = {
+					type = "executable",
+					command = command,
+					args = {
+						"-m",
+						"debugpy.adapter",
+					},
+				}
+				require("mason-nvim-dap").default_setup(config) -- don't forget this!
 			end,
 			javadbg = function(config)
 				-- This bundles definition is the same as in the previous section (java-debug installation)
@@ -53,6 +81,27 @@ return {
 						vim.fn.glob("/java-test/extension/server/com.microsoft.java.test.plugin-*.jar", 1),
 					},
 				}
+				require("mason-nvim-dap").default_setup(config) -- don't forget this!
+			end,
+			codelldb = function(config)
+				config.configurations = {
+					{
+						name = "LLDB: Launch",
+						type = "codelldb",
+						request = "launch",
+						program = function()
+							return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+						end,
+						cwd = "${workspaceFolder}",
+						stopOnEntry = false,
+						args = function()
+							args = vim.fn.input("Args: ")
+							return vim.split(args, " ")
+						end,
+						console = "integratedTerminal",
+					},
+				}
+				require("mason-nvim-dap").default_setup(config) -- don't forget this!
 			end,
 		},
 	},

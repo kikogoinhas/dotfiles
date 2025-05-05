@@ -90,6 +90,9 @@ function M.setup()
 		opts.desc = "Show documentation for what is under cursor"
 		keymap.set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
 
+		opts.desc = "Show signature help"
+		keymap.set("n", "gs", vim.lsp.buf.signature_help, opts) -- show documentation for what is under cursor
+
 		opts.desc = "Restart LSP"
 		keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
 
@@ -227,7 +230,7 @@ function M.setup()
 			-- The configuration for jdtls is also placed where jdtls was installed. This will
 			-- need to be updated depending on your environment
 			"-configuration",
-			home .. "/.local/share/nvim/mason/packages/jdtls/config_linux",
+			home .. "/.local/share/nvim/mason/packages/jdtls/config_mac_arm",
 
 			-- Use the workspace_folder defined above to store data for this project
 			"-data",

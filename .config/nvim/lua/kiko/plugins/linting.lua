@@ -4,7 +4,8 @@ return {
 	event = { "BufReadPre", "BufNewFile" }, -- to disable, comment this out
 	config = function()
 		local lint = require("lint")
-
+		lint.linters.pylint.cmd = "python"
+		lint.linters.pylint.args = { "-m", "pylint", "-f", "json" }
 		lint.linters_by_ft = {
 			javascript = { "eslint_d" },
 			typescript = { "eslint_d" },

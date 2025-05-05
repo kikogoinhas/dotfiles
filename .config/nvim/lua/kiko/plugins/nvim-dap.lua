@@ -29,7 +29,6 @@ return {
 				dap.listeners.before.event_exited.dapui_config = function()
 					dapui.open()
 				end
-
 				require("jdtls.dap").setup_dap_main_class_configs()
 			end,
 		},

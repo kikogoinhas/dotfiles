@@ -27,11 +27,13 @@ return {
 		mason_lspconfig.setup({
 			-- list of servers for mason to install
 			ensure_installed = {
+				"clangd",
 				"html",
 				"cssls",
 				"tailwindcss",
 				"svelte",
 				"lua_ls",
+				"bashls",
 				"graphql",
 				"emmet_ls",
 				"prismals",
@@ -44,6 +46,7 @@ return {
 				"volar",
 				"vtsls",
 				"yamlls",
+				"jsonls",
 			},
 			-- auto-install configured servers (with lspconfig)
 			automatic_installation = true, -- not the same as ensure_installed

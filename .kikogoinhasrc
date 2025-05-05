@@ -1,13 +1,28 @@
-# Env
-WIN_USER="francisco.goinhas"
-WIN_HOME="/mnt/c/Users/$WIN_USER"
+#!/bin/bash
 
 # Aliases
-alias pbcopy="xclip -selection clipboard -i"
-alias pbpaste="xclip -o"
 alias dotfiles="git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias python=python3
+alias destinusws="cd $HOME/Documents/destinus"
+alias terraform="tofu"
+alias colima-start=colima start --arch aarch64 --vm-type=vz --vz-rosetta --network-address
+
+# PATH
+HOME_BIN=$HOME/bin
+if [ ! -d "$HOME_BIN" ]; then
+  mkdir "$HOME_BIN"
+fi
+
+export PATH=$PATH:$HOME/bin
+export GITEA_TOKEN=d2b3df52d6ae6172d642e2fec6d6a4458e180816
+export JFROG_ARTIFACTORY_TOKEN=cmVmdGtuOjAxOjE3NjEzNzY5MDA6SXc2MU1YYWVYc3hQYVI0ZWVLWW9FRzRhQmsy
+
 # asdf
 . "$HOME/.asdf/asdf.sh"
 . "$HOME/.asdf/completions/asdf.bash"
 
+export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
+export TESTCONTAINERS_HOST_OVERRIDE=$(colima ls -j | jq -r '.address')
+export GITEA_TOKEN_REPO_ONLY=ae75d452469eea48c0d79730e25a7ff4c4f31e20
+
+export PIP_EXTRA_INDEX_URL="https://production:${JFROG_ARTIFACTORY_TOKEN}@destinus.jfrog.io/artifactory/api/pypi/dst-pypi/simple"

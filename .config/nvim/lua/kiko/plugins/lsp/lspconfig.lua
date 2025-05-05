@@ -4,7 +4,7 @@ return {
 	dependencies = {
 		"hrsh7th/cmp-nvim-lsp",
 		{ "antosha417/nvim-lsp-file-operations", config = true },
-		{ "folke/neodev.nvim", config = true },
+		{ "folke/lazydev.nvim", config = true },
 	},
 	config = function()
 		-- import lspconfig plugin
@@ -36,7 +36,7 @@ return {
 			opts.desc = "See available code actions"
 			keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
 
-			opts.desc = "Smart rename"
+			opts.desc = "smart rename"
 			keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts) -- smart rename
 
 			opts.desc = "Show buffer diagnostics"
@@ -56,6 +56,9 @@ return {
 
 			opts.desc = "Restart LSP"
 			keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
+
+			opts.desc = "Show signature help"
+			keymap.set("n", "gs", vim.lsp.buf.signature_help, opts) -- show documentation for what is under cursor
 		end
 
 		-- used to enable autocompletion (assign to every lsp server config)
@@ -74,6 +77,15 @@ return {
 			capabilities = capabilities,
 			on_attach = on_attach,
 		})
+
+		local function organize_imports()
+			local params = {
+				command = "_typescript.organizeImports",
+				arguments = { vim.api.nvim_buf_get_name(0) },
+				title = "",
+			}
+			vim.lsp.buf.execute_command(params)
+		end
 
 		-- configure typescript server with plugin
 		lspconfig["vtsls"].setup({
@@ -189,9 +201,69 @@ return {
 			on_attach = on_attach,
 		})
 
-		lspconfig["yamlls"].setup({
+		local cfg = require("yaml-companion").setup({
+			lspconfig = {
+				on_attach = function(client, bufnr)
+					on_attach(client, bufnr)
+					vim.keymap.set("n", "gY", ":Telescope yaml_schema<CR>", {
+						buffer = bufnr,
+						desc = "Open YAML Schemas",
+					})
+				end,
+			},
+		})
+		lspconfig["yamlls"].setup(cfg)
+
+		lspconfig["jsonls"].setup({
 			capabilities = capabilities,
 			on_attach = on_attach,
+			settings = {
+				json = {
+					-- Schemas https://www.schemastore.org
+					schemas = {
+						{
+							fileMatch = { "package.json" },
+							url = "https://json.schemastore.org/package.json",
+						},
+						{
+							fileMatch = { "tsconfig*.json" },
+							url = "https://json.schemastore.org/tsconfig.json",
+						},
+						{
+							fileMatch = {
+								".prettierrc",
+								".prettierrc.json",
+								"prettier.config.json",
+							},
+							url = "https://json.schemastore.org/prettierrc.json",
+						},
+						{
+							fileMatch = { ".eslintrc", ".eslintrc.json" },
+							url = "https://json.schemastore.org/eslintrc.json",
+						},
+						{
+							fileMatch = { ".babelrc", ".babelrc.json", "babel.config.json" },
+							url = "https://json.schemastore.org/babelrc.json",
+						},
+						{
+							fileMatch = { "lerna.json" },
+							url = "https://json.schemastore.org/lerna.json",
+						},
+						{
+							fileMatch = { "now.json", "vercel.json" },
+							url = "https://json.schemastore.org/now.json",
+						},
+						{
+							fileMatch = {
+								".stylelintrc",
+								".stylelintrc.json",
+								"stylelint.config.json",
+							},
+							url = "http://json.schemastore.org/stylelintrc.json",
+						},
+					},
+				},
+			},
 		})
 
 		lspconfig["volar"] = {
@@ -202,21 +274,45 @@ return {
 		lspconfig["lua_ls"].setup({
 			capabilities = capabilities,
 			on_attach = on_attach,
-			settings = { -- custom settings for lua
-				Lua = {
-					-- make the language server recognize "vim" global
-					diagnostics = {
-						globals = { "vim" },
+			on_init = function(client)
+				local path = client.workspace_folders[1].name
+				if vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc") then
+					return
+				end
+
+				client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
+					runtime = {
+						-- Tell the language server which version of Lua you're using
+						-- (most likely LuaJIT in the case of Neovim)
+						version = "LuaJIT",
 					},
+					-- Make the server aware of Neovim runtime files
 					workspace = {
-						-- make language server aware of runtime files
+						checkThirdParty = false,
 						library = {
 							vim.env.VIMRUNTIME,
-							[vim.fn.stdpath("config") .. "/lua"] = true,
+							-- Depending on the usage, you might want to add additional paths here.
+							-- "${3rd}/luv/library"
+							-- "${3rd}/busted/library",
 						},
+						-- or pull in all of 'runtimepath'. NOTE: this is a lot slower
+						-- library = vim.api.nvim_get_runtime_file("", true)
 					},
-				},
+				})
+			end,
+			settings = {
+				Lua = {},
 			},
+		})
+
+		lspconfig["bashls"].setup({
+			capabilities = capabilities,
+			on_attach = on_attach,
+		})
+
+		lspconfig["clangd"].setup({
+			capabilities = capabilities,
+			on_attach = on_attach,
 		})
 	end,
 }

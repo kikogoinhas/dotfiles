@@ -75,6 +75,7 @@ return {
 					"bash",
 					"lua",
 					"vim",
+					"python",
 					"dockerfile",
 					"gitignore",
 					"query",

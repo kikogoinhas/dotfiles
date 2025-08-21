@@ -3,6 +3,7 @@ return {
 	event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
 		"hrsh7th/cmp-nvim-lsp",
+		{ "nvim-telescope/telescope.nvim" },
 		{ "antosha417/nvim-lsp-file-operations", config = true },
 		{ "folke/lazydev.nvim", config = true },
 	},
@@ -121,6 +122,11 @@ return {
 		lspconfig["tailwindcss"].setup({
 			capabilities = capabilities,
 			on_attach = on_attach,
+			settings = {
+				tailwindCSS = {
+					classAttributes = { "class", "className", "ngClass", ".*Styles*" },
+				},
+			},
 		})
 
 		-- configure svelte server
@@ -201,18 +207,20 @@ return {
 			on_attach = on_attach,
 		})
 
-		local cfg = require("yaml-companion").setup({
-			lspconfig = {
-				on_attach = function(client, bufnr)
-					on_attach(client, bufnr)
-					vim.keymap.set("n", "gY", ":Telescope yaml_schema<CR>", {
-						buffer = bufnr,
-						desc = "Open YAML Schemas",
-					})
-				end,
-			},
+		local yaml_conf = require("schema-companion").setup_client({
+			on_attach = function(client, bufnr)
+				on_attach(client, bufnr)
+				keymap = require("vim.keymap")
+				keymap.set("n", "gY", function()
+					require("telescope").extensions.schema_companion.select_schema()
+				end, {
+					buffer = bufnr,
+					desc = "Open YAML Schemas",
+				})
+			end,
 		})
-		lspconfig["yamlls"].setup(cfg)
+
+		lspconfig["yamlls"].setup(yaml_conf)
 
 		lspconfig["jsonls"].setup({
 			capabilities = capabilities,

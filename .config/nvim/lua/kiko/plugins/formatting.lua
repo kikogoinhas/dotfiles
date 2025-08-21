@@ -9,8 +9,8 @@ return {
 			formatters_by_ft = {
 				javascript = { "prettier" },
 				typescript = { "prettier" },
-				javascriptreact = { "prettier" },
-				typescriptreact = { "prettier" },
+				javascriptreact = { "eslint_d" },
+				typescriptreact = { "eslint_d" },
 				vue = { "prettier" },
 				svelte = { "prettier" },
 				css = { "prettier" },
